@@ -10,8 +10,8 @@ class MainHandler(tornado.web.RequestHandler):
  
 def main():
     application = tornado.web.Application([
-        (r'/favicon.ico', tornado.web.StaticFileHandler, {'path': settings.favicon}),
-        (r'/static/(.*)', tornado.web.StaticFilterHandler, {'path': 'static'})
+        (r'/(favicon.ico)', tornado.web.StaticFileHandler, {'path': '/static/favicon.ico'}),
+        (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': '/static/'}),
         (r"/", MainHandler)
     ])
     http_server = tornado.httpserver.HTTPServer(application)
