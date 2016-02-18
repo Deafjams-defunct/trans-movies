@@ -1,21 +1,35 @@
 import os
-import settings
+import urlparse
+import redis
 import motor
+
+import settings
+import handlers
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
-
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.write("Hello world")
  
 def main():
     
     database = motor.motor_tornado.MotorClient(os.environ.get('MONGOLAB_URI'))
-    application = tornado.web.Application([
-        (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': 'static'}),
-        (r"/", MainHandler)
-    ], database=database)
+    
+    url = urlparse.urlparse(os.environ.get('REDISCLOUD_URL'))
+    redis = redis.Redis(
+        host=url.hostname, 
+        port=url.port, 
+        password=url.password
+    )
+    
+    application = tornado.web.Application(
+        [
+            (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': 'static'}),
+            (r"/", handlers.MainHandler)
+        ], 
+        database=database,
+        redis=redis
+    )
+    
     http_server = tornado.httpserver.HTTPServer(application)
     port = int(os.environ.get("PORT", 5000))
     http_server.listen(port)
