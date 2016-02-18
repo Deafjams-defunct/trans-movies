@@ -15,7 +15,7 @@ def main():
     application = tornado.web.Application([
         (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': 'static'}),
         (r"/", MainHandler)
-    ]. database=database)
+    ], database=database)
     http_server = tornado.httpserver.HTTPServer(application)
     port = int(os.environ.get("PORT", 5000))
     http_server.listen(port)
