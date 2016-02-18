@@ -1,7 +1,8 @@
 import os
+import settings
 import tornado.httpserver
 import tornado.ioloop
-import tornado.eb
+import tornado.web
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -9,7 +10,9 @@ class MainHandler(tornado.web.RequestHandler):
  
 def main():
     application = tornado.web.Application([
-        (r"/", MainHandler),
+        (r'/favicon.ico', tornado.web.StaticFileHandler, {'path': settings.favicon}),
+        (r'/static/(.*)', tornado.web.StaticFilterHandler, {'path': 'static'})
+        (r"/", MainHandler)
     ])
     http_server = tornado.httpserver.HTTPServer(application)
     port = int(os.environ.get("PORT", 5000))
