@@ -15,7 +15,7 @@ def main():
     database = motor.motor_tornado.MotorClient(os.environ.get('MONGOLAB_URI'))
     
     url = urlparse.urlparse(os.environ.get('REDISCLOUD_URL'))
-    redis = redis.Redis(
+    redis_client = redis.Redis(
         host=url.hostname, 
         port=url.port, 
         password=url.password
@@ -27,7 +27,7 @@ def main():
             (r"/", handlers.MainHandler)
         ], 
         database=database,
-        redis=redis
+        redis=redis_client
     )
     
     http_server = tornado.httpserver.HTTPServer(application)
